@@ -99,7 +99,7 @@
     .wrap{
       max-width: 980px;
       margin: 0 auto;
-      padding: 18px 16px 50px;
+      padding: 18px 16px 22px;
     }
 
     .card{
@@ -202,7 +202,7 @@
     .footerImageWrap{
       max-width: 980px;
       margin: 14px auto 0;
-      padding: 0 16px 28px;
+      padding: 0 16px 34px;
       display:flex;
       justify-content:center;
     }
@@ -214,6 +214,15 @@
       box-shadow: var(--shadow);
       display:block;
       object-fit: cover;
+      min-height: 220px; /* prevents huge blank area if image is slow */
+      background: #e5e7eb;
+    }
+    .footerCaption{
+      max-width: 980px;
+      margin: 8px auto 0;
+      padding: 0 16px;
+      color: var(--muted);
+      font-size: 12px;
     }
   </style>
 </head>
@@ -266,16 +275,17 @@
     </section>
   </div>
 
-  <!-- Footer image (Google Drive direct image endpoint) -->
+  <!-- Footer image (Drive + fallback URLs for reliability) -->
   <div class="footerImageWrap">
     <img
       class="footerImage"
-      src="https://drive.google.com/uc?export=download&id=1ORpQKhqK4C3hU3qL7jbHsUwUpI5M8SjM"
+      id="footerImg"
       alt="Dinner at Judge’s"
       loading="lazy"
       referrerpolicy="no-referrer"
     />
   </div>
+  <div class="footerCaption">Dinner at Judge’s</div>
 
   <script>
     // Folder-restricted Drive search
@@ -300,6 +310,32 @@
     qEl.addEventListener("keydown", (e) => {
       if(e.key === "Enter") runSearch();
     });
+
+    // ---- Reliable footer image loading (Google Drive) ----
+    // (Drive "view" links often don't embed. These endpoints are more reliable.)
+    const FILE_ID = "1ORpQKhqK4C3hU3qL7jbHsUwUpI5M8SjM";
+    const img = document.getElementById("footerImg");
+
+    const sources = [
+      // Most reliable for embedding
+      `https://drive.google.com/thumbnail?id=${FILE_ID}&sz=w2000`,
+      // Often works too (Googleusercontent direct)
+      `https://lh3.googleusercontent.com/d/${FILE_ID}=w2000`,
+      // Sometimes works, sometimes doesn't
+      `https://drive.google.com/uc?export=view&id=${FILE_ID}`
+    ];
+
+    let i = 0;
+    function tryNext(){
+      if(i >= sources.length){
+        img.alt = "Dinner at Judge’s (image unavailable — check Drive sharing: Anyone with link can view)";
+        return;
+      }
+      img.src = sources[i++];
+    }
+
+    img.onerror = tryNext;
+    tryNext();
   </script>
 </body>
 </html>
