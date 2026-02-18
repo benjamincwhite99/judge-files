@@ -15,8 +15,6 @@
       --line:#cbd5e1;
       --line2:#94a3b8;
       --seal:#0b4aa2;
-      --warn:#b45309;
-      --good:#166534;
       --shadow: 0 10px 28px rgba(15, 23, 42, .10);
       --radius: 14px;
     }
@@ -31,12 +29,6 @@
       color: var(--ink);
     }
 
-    .wrap{
-      max-width: 1060px;
-      margin: 0 auto;
-      padding: 18px 16px 50px;
-    }
-
     /* Header */
     .masthead{
       background: linear-gradient(180deg, #0b4aa2, #0a3f8a);
@@ -45,7 +37,7 @@
       box-shadow: 0 12px 40px rgba(11,74,162,.25);
     }
     .mast-inner{
-      max-width: 1060px;
+      max-width: 980px;
       margin: 0 auto;
       padding: 18px 16px;
       display:flex;
@@ -103,15 +95,11 @@
       box-shadow: 0 0 0 4px rgba(34,197,94,.25);
     }
 
-    /* Layout */
-    .grid{
-      display:grid;
-      grid-template-columns: 1.25fr .75fr;
-      gap: 14px;
-      margin-top: 14px;
-    }
-    @media (max-width: 900px){
-      .grid{ grid-template-columns: 1fr; }
+    /* Single-column layout */
+    .wrap{
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 18px 16px 50px;
     }
 
     .card{
@@ -136,6 +124,7 @@
       font-size: 12px;
       color: var(--muted);
       line-height:1.35;
+      max-width: 85ch;
     }
     .card-b{
       padding: 14px;
@@ -172,7 +161,7 @@
       gap:10px;
       align-items:center;
       flex-wrap:wrap;
-      margin-top: 10px;
+      margin-top: 12px;
     }
     input{
       flex:1;
@@ -186,36 +175,8 @@
     }
     input::placeholder{ color:#94a3b8; }
 
-    /* Right sidebar “notice” */
-    .notice{
-      border-left: 5px solid var(--seal);
-      background: #f8fafc;
-      padding: 12px;
-      border-radius: 12px;
-      border: 1px solid var(--line);
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.45;
-    }
-    .notice b{ color: var(--ink); }
-
-    .chips{
-      margin-top: 10px;
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-    }
-    .chip{
-      font-size: 12px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid var(--line);
-      background:#fff;
-      color: var(--muted);
-    }
-
     .log{
-      margin-top: 10px;
+      margin-top: 12px;
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
       font-size: 12px;
       background: #0b1220;
@@ -228,7 +189,7 @@
     }
 
     .footer{
-      margin-top: 14px;
+      margin-top: 12px;
       color: var(--muted);
       font-size: 12px;
       display:flex;
@@ -236,8 +197,6 @@
       gap:10px;
       flex-wrap:wrap;
     }
-    .footer a{ color: var(--seal); text-decoration:none; }
-    .footer a:hover{ text-decoration:underline; }
   </style>
 </head>
 
@@ -256,71 +215,37 @@
   </header>
 
   <div class="wrap">
-    <div class="grid">
-      <!-- Main -->
-      <section class="card">
-        <div class="card-h">
-          <h2>Intake & Retrieval</h2>
-          <div class="meta">
-            Submit supporting materials via the official intake form. Search is executed in the Archive folder.
-            (This is a joke site, but the workflow is real.)
-          </div>
+    <section class="card">
+      <div class="card-h">
+        <h2>Intake & Retrieval</h2>
+        <div class="meta">
+          Submit supporting materials via the official intake form. Searches run inside the Archive folder.
+        </div>
+      </div>
+
+      <div class="card-b">
+        <div class="row">
+          <a class="btn" href="https://docs.google.com/forms/d/e/1FAIpQLSffuEtiwLibEku83jdnYlI75-9H-CGEQMbp2DBrdcHSPXIurg/viewform?usp=header" target="_blank" rel="noreferrer">
+            Open Intake Form
+          </a>
+          <a class="btn secondary" href="https://drive.google.com/drive/folders/1kkZdDOB2govDfJcxLmP6ZBlFxPKapfhx?usp=sharing" target="_blank" rel="noreferrer">
+            Open Archive Folder
+          </a>
         </div>
 
-        <div class="card-b">
-          <div class="row">
-            <a class="btn" href="https://docs.google.com/forms/d/e/1FAIpQLSffuEtiwLibEku83jdnYlI75-9H-CGEQMbp2DBrdcHSPXIurg/viewform?usp=header" target="_blank" rel="noreferrer">
-              Open Intake Form
-            </a>
-            <a class="btn secondary" href="https://drive.google.com/drive/folders/1kkZdDOB2govDfJcxLmP6ZBlFxPKapfhx?usp=sharing" target="_blank" rel="noreferrer">
-              Open Archive Folder
-            </a>
-          </div>
-
-          <div class="searchRow">
-            <input id="q" placeholder="Search within Archive (press Enter) …" />
-            <button class="btn secondary" id="run">Run Search</button>
-          </div>
-
-          <div class="log" id="searchLog">LOG: Awaiting query…</div>
-
-          <div class="footer">
-            <span>Tip: Best results when signed into Google.</span>
-            <span>Folder-restricted search enabled.</span>
-          </div>
+        <div class="searchRow">
+          <input id="q" placeholder="Search within Archive (press Enter) …" />
+          <button class="btn secondary" id="run">Run Search</button>
         </div>
-      </section>
 
-      <!-- Sidebar -->
-      <aside class="card">
-        <div class="card-h">
-          <h2>Operator Notice</h2>
-          <div class="meta">Guidance for submissions and access.</div>
+        <div class="log" id="searchLog">LOG: Awaiting query…</div>
+
+        <div class="footer">
+          <span>Tip: Best results when signed into Google.</span>
+          <span>Folder-restricted search enabled.</span>
         </div>
-        <div class="card-b">
-          <div class="notice">
-            <b>Handling:</b> Share the Drive folder as <b>Viewer</b> to prevent edits. <br/>
-            <b>Uploads:</b> Google Forms may require sign-in for file uploads. <br/>
-            <b>Content:</b> Keep it funny and non-personal; blur names if needed.
-          </div>
-
-          <div class="chips">
-            <div class="chip">DOCKET: JF-0001</div>
-            <div class="chip">CLASS: INTERNAL</div>
-            <div class="chip">MODE: ARCHIVE</div>
-            <div class="chip">AUDIT: OFF (lol)</div>
-          </div>
-
-          <div class="log" style="margin-top:12px;">
-STATUS CHECK
-- Intake: ONLINE
-- Archive: AVAILABLE
-- Search: FOLDER-SCOPED
-- Operator: PROBABLY QUALIFIED
-          </div>
-        </div>
-      </aside>
-    </div>
+      </div>
+    </section>
   </div>
 
   <script>
