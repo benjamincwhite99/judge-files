@@ -29,26 +29,30 @@
     <div class="card">
       <strong>Portal</strong>
       <div class="row">
-        <a class="btn" id="uploadLink" href=https://docs.google.com/forms/d/e/1FAIpQLSffuEtiwLibEku83jdnYlI75-9H-CGEQMbp2DBrdcHSPXIurg/viewform?usp=dialog target="_blank">Upload Evidence</a>
-        <a class="btn" id="driveLink" href=https://drive.google.com/drive/folders/1kkZdDOB2govDfJcxLmP6ZBlFxPKapfhx?usp=sharing target="_blank">Open The Files</a>
+        <a class="btn" id="uploadLink" href="https://docs.google.com/forms/d/e/1FAIpQLSffuEtiwLibEku83jdnYlI75-9H-CGEQMbp2DBrdcHSPXIurg/viewform?usp=header" target="_blank" rel="noreferrer">Upload Evidence</a>
+        <a class="btn" id="driveLink" href="https://drive.google.com/drive/folders/1kkZdDOB2govDfJcxLmP6ZBlFxPKapfhx?usp=sharing" target="_blank" rel="noreferrer">Open The Files</a>
       </div>
 
-      <input class="searchbox" id="q" placeholder="Search… (this will open Drive search)" />
+      <input class="searchbox" id="q" placeholder="Search… (opens Google Drive search in a new tab)" />
 
       <div class="tiny">
-        Tip: Use Google Drive’s search once the folder opens. It can search inside many PDFs automatically.
+        Tip: Press Enter after typing. This uses Google Drive’s search (best if you’re signed into Google).
       </div>
     </div>
   </div>
 
   <script>
-    const driveFolder = "PASTE_YOUR_DRIVE_FOLDER_LINK";
+    // Your Drive folder link (used as a hint; search itself opens Drive search)
+    const driveFolder = "https://drive.google.com/drive/folders/1kkZdDOB2govDfJcxLmP6ZBlFxPKapfhx?usp=sharing";
+
     document.getElementById("q").addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
-        const q = encodeURIComponent(e.target.value.trim());
-        if (!q) return;
-        // Drive search URL (works best when signed into Google)
-        window.open("https://drive.google.com/drive/search?q=" + q, "_blank");
+        const query = e.target.value.trim();
+        if (!query) return;
+        const q = encodeURIComponent(query);
+
+        // Opens Drive's global search. Users can also click "Open The Files" to browse the folder.
+        window.open("https://drive.google.com/drive/search?q=" + q, "_blank", "noopener,noreferrer");
       }
     });
   </script>
