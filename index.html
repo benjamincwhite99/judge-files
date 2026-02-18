@@ -1,60 +1,395 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>The Judge Files</title>
+  <meta name="description" content="Upload PDFs/photos and search the evidence. Totally serious. Definitely real." />
+
   <style>
-    body { font-family: system-ui, Arial; margin: 0; background:#0b0f14; color:#e8eef6; }
-    .wrap { max-width: 900px; margin: 0 auto; padding: 40px 18px; }
-    h1 { font-size: 42px; margin: 0 0 10px; }
-    p { color: #b7c5d8; margin: 0 0 22px; line-height: 1.4; }
-    .card { background:#101826; border:1px solid #1c2633; border-radius: 16px; padding: 18px; }
-    .row { display:flex; gap:12px; flex-wrap:wrap; margin-top: 14px; }
-    a.btn {
-      display:inline-block; padding: 12px 16px; border-radius: 12px;
-      background:#16253a; border:1px solid #2a3950; color:#e8eef6; text-decoration:none;
+    :root{
+      --bg0:#070A10;
+      --bg1:#0B0F1A;
+      --card: rgba(16, 24, 38, .78);
+      --stroke: rgba(148, 163, 184, .16);
+      --text:#E8EEF6;
+      --muted:#B7C5D8;
+      --muted2:#93A4BD;
+      --accent:#8B5CF6;
+      --accent2:#22D3EE;
+      --ok:#34D399;
+      --warn:#FBBF24;
+      --bad:#FB7185;
+      --shadow: 0 20px 80px rgba(0,0,0,.45);
+      --radius: 18px;
     }
-    a.btn:hover { background:#1b2f4a; }
-    .tiny { font-size: 13px; color:#9fb2cb; margin-top: 12px; }
-    .searchbox { width: 100%; padding: 12px 14px; border-radius: 12px;
-      border:1px solid #2a3950; background:#0b1220; color:#e8eef6; margin-top: 14px; }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--text);
+      background:
+        radial-gradient(1200px 700px at 20% 10%, rgba(139,92,246,.25), transparent 55%),
+        radial-gradient(900px 600px at 80% 20%, rgba(34,211,238,.18), transparent 55%),
+        radial-gradient(900px 800px at 50% 90%, rgba(99,102,241,.14), transparent 60%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+      overflow-x:hidden;
+    }
+
+    .wrap{
+      max-width: 1050px;
+      margin: 0 auto;
+      padding: 34px 18px 60px;
+    }
+
+    /* Top bar */
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      margin-bottom: 20px;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      user-select:none;
+    }
+    .logo{
+      width:40px;height:40px;border-radius:12px;
+      background:
+        linear-gradient(135deg, rgba(139,92,246,.95), rgba(34,211,238,.75));
+      box-shadow: 0 10px 30px rgba(139,92,246,.22);
+      position:relative;
+    }
+    .logo:after{
+      content:"";
+      position:absolute; inset:9px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,.35);
+      background: rgba(0,0,0,.10);
+      backdrop-filter: blur(4px);
+    }
+    .brand h1{
+      font-size: 18px;
+      line-height:1.1;
+      margin:0;
+      letter-spacing:.2px;
+    }
+    .brand .sub{
+      display:block;
+      font-size: 12px;
+      color: var(--muted2);
+      margin-top: 2px;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,.04);
+      backdrop-filter: blur(10px);
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .dot{
+      width:8px;height:8px;border-radius:999px;
+      background: var(--ok);
+      box-shadow: 0 0 0 4px rgba(52,211,153,.12);
+    }
+
+    /* Hero */
+    .hero{
+      display:grid;
+      grid-template-columns: 1.25fr .75fr;
+      gap:16px;
+      align-items:stretch;
+      margin-top: 10px;
+      margin-bottom: 16px;
+    }
+    @media (max-width: 880px){
+      .hero{ grid-template-columns: 1fr; }
+    }
+
+    .card{
+      border-radius: var(--radius);
+      border: 1px solid var(--stroke);
+      background: var(--card);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      overflow:hidden;
+    }
+    .heroMain{
+      padding: 22px;
+      position:relative;
+    }
+    .heroMain:before{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background:
+        radial-gradient(500px 180px at 20% 0%, rgba(139,92,246,.20), transparent 60%),
+        radial-gradient(420px 200px at 80% 20%, rgba(34,211,238,.16), transparent 60%);
+      pointer-events:none;
+    }
+    .heroMain > *{ position:relative; }
+
+    .headline{
+      font-size: clamp(34px, 4vw, 52px);
+      margin: 0 0 10px;
+      letter-spacing: -0.6px;
+    }
+    .lede{
+      margin: 0 0 16px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.55;
+      max-width: 62ch;
+    }
+
+    .actions{
+      display:flex; flex-wrap:wrap; gap:10px;
+      margin-top: 10px;
+    }
+    .btn{
+      appearance:none;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      padding: 12px 14px;
+      border-radius: 14px;
+      cursor:pointer;
+      text-decoration:none;
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+      transition: transform .08s ease, background .2s ease, border-color .2s ease;
+      user-select:none;
+      font-weight: 600;
+      letter-spacing: .2px;
+    }
+    .btn:hover{ background: rgba(255,255,255,.09); border-color: rgba(255,255,255,.22); transform: translateY(-1px); }
+    .btn:active{ transform: translateY(0px); }
+    .btn.primary{
+      border-color: rgba(139,92,246,.55);
+      background: linear-gradient(135deg, rgba(139,92,246,.55), rgba(34,211,238,.25));
+      box-shadow: 0 18px 50px rgba(139,92,246,.18);
+    }
+    .btn.primary:hover{
+      border-color: rgba(139,92,246,.78);
+      background: linear-gradient(135deg, rgba(139,92,246,.70), rgba(34,211,238,.28));
+    }
+
+    .icon{
+      width:18px;height:18px; display:inline-block;
+      fill: currentColor;
+      opacity:.95;
+    }
+
+    .searchWrap{
+      margin-top: 14px;
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+    .search{
+      flex:1;
+      border-radius: 14px;
+      border: 1px solid rgba(148,163,184,.22);
+      background: rgba(0,0,0,.22);
+      color: var(--text);
+      padding: 12px 14px;
+      outline:none;
+      font-size: 14px;
+    }
+    .search::placeholder{ color: rgba(183,197,216,.65); }
+    .kbd{
+      border:1px solid rgba(148,163,184,.22);
+      background: rgba(255,255,255,.05);
+      padding: 3px 7px;
+      border-radius: 8px;
+      font-size: 12px;
+      color: var(--muted2);
+    }
+
+    /* Side card */
+    .side{
+      padding: 18px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .side h3{
+      margin:0;
+      font-size: 14px;
+      letter-spacing:.3px;
+      color: rgba(232,238,246,.9);
+    }
+    .mini{
+      color: var(--muted);
+      font-size: 13px;
+      line-height:1.5;
+    }
+
+    .status{
+      border-radius: 14px;
+      border: 1px solid rgba(148,163,184,.18);
+      background: rgba(0,0,0,.18);
+      padding: 12px;
+      display:grid;
+      gap:10px;
+    }
+    .barRow{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      font-size: 12px;
+      color: var(--muted2);
+    }
+    .bar{
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(148,163,184,.14);
+      overflow:hidden;
+    }
+    .bar > span{
+      display:block;
+      height:100%;
+      width: 72%;
+      background: linear-gradient(90deg, rgba(34,211,238,.65), rgba(139,92,246,.80));
+      border-radius: 999px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 14px;
+    }
+    @media (max-width: 880px){ .grid{ grid-template-columns: 1fr; } }
+
+    .tile{
+      padding: 14px;
+    }
+    .tile b{ display:block; margin-bottom:6px; }
+    .tile p{ margin:0; color: var(--muted); font-size: 13px; line-height: 1.45; }
+
+    .footer{
+      margin-top: 18px;
+      color: rgba(183,197,216,.65);
+      font-size: 12px;
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .footer a{ color: rgba(147,197,253,.92); text-decoration:none; }
+    .footer a:hover{ text-decoration:underline; }
   </style>
 </head>
+
 <body>
   <div class="wrap">
-    <h1>The Judge Files</h1>
-    <p>Upload “evidence” (PDFs/photos) and search it. Totally serious. Definitely real.</p>
-
-    <div class="card">
-      <strong>Portal</strong>
-      <div class="row">
-        <a class="btn" id="uploadLink" href="https://docs.google.com/forms/d/e/1FAIpQLSffuEtiwLibEku83jdnYlI75-9H-CGEQMbp2DBrdcHSPXIurg/viewform?usp=header" target="_blank" rel="noreferrer">Upload Evidence</a>
-        <a class="btn" id="driveLink" href="https://drive.google.com/drive/folders/1kkZdDOB2govDfJcxLmP6ZBlFxPKapfhx?usp=sharing" target="_blank" rel="noreferrer">Open The Files</a>
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1>The Judge Files <span class="sub">Community Evidence Vault (100% legit)</span></h1>
+        </div>
       </div>
-
-      <input class="searchbox" id="q" placeholder="Search… (opens Google Drive search in a new tab)" />
-
-      <div class="tiny">
-        Tip: Press Enter after typing. This uses Google Drive’s search (best if you’re signed into Google).
-      </div>
+      <div class="pill"><span class="dot"></span> Case system online</div>
     </div>
+
+    <section class="hero">
+      <div class="card heroMain">
+        <h2 class="headline">Submit evidence. <br/>Search receipts. <span style="opacity:.7;">Judge accordingly.</span></h2>
+        <p class="lede">
+          Upload PDFs + photos through the official portal. Then search everything in Google Drive like a courtroom wizard.
+          This is a joke site… but the search is surprisingly real.
+        </p>
+
+        <div class="actions">
+          <a class="btn primary" href="https://docs.google.com/forms/d/e/1FAIpQLSffuEtiwLibEku83jdnYlI75-9H-CGEQMbp2DBrdcHSPXIurg/viewform?usp=header" target="_blank" rel="noreferrer">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18h14v2H5z"/></svg>
+            Upload Evidence
+          </a>
+
+          <a class="btn" href="https://drive.google.com/drive/folders/1kkZdDOB2govDfJcxLmP6ZBlFxPKapfhx?usp=sharing" target="_blank" rel="noreferrer">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 4 2 18h12l8-14H10zm2 2h7l-6.86 12H5.5L12 6z"/></svg>
+            Open The Files
+          </a>
+        </div>
+
+        <div class="searchWrap">
+          <input class="search" id="q" placeholder="Search… (press Enter — opens Drive search in a new tab)" />
+          <div class="kbd">Enter</div>
+        </div>
+
+        <div class="grid">
+          <div class="card tile" style="box-shadow:none;background:rgba(255,255,255,.03);">
+            <b>Fast</b>
+            <p>Google Drive searches inside many PDFs automatically.</p>
+          </div>
+          <div class="card tile" style="box-shadow:none;background:rgba(255,255,255,.03);">
+            <b>Free</b>
+            <p>No server, no database, no bills. Just vibes.</p>
+          </div>
+          <div class="card tile" style="box-shadow:none;background:rgba(255,255,255,.03);">
+            <b>Weaponized</b>
+            <p>Perfect for receipts, screenshots, and “exhibits.”</p>
+          </div>
+        </div>
+
+        <div class="footer">
+          <span>Tip: Drive search works best if you’re signed into Google.</span>
+          <span>Need a new link? Update the two buttons in this file.</span>
+        </div>
+      </div>
+
+      <aside class="card side">
+        <h3>Case Status</h3>
+        <div class="mini">All submissions are routed through the official evidence intake form.</div>
+
+        <div class="status">
+          <div class="barRow"><span>Evidence processing</span><span>72%</span></div>
+          <div class="bar"><span></span></div>
+          <div class="barRow"><span>Judgment readiness</span><span style="color:var(--warn)">Pending</span></div>
+          <div class="barRow"><span>Bias detection</span><span style="color:var(--ok)">Nominal</span></div>
+        </div>
+
+        <div class="mini">
+          <b style="color:rgba(232,238,246,.9)">House rules</b><br/>
+          • Don’t upload anything you wouldn’t show your mom.<br/>
+          • If it’s spicy, blur names first.<br/>
+          • The judge is always watching. (jk)
+        </div>
+      </aside>
+    </section>
   </div>
 
   <script>
-    // Your Drive folder link (used as a hint; search itself opens Drive search)
-    const driveFolder = "https://drive.google.com/drive/folders/1kkZdDOB2govDfJcxLmP6ZBlFxPKapfhx?usp=sharing";
+  // Your folder ID (from the Drive URL)
+  const FOLDER_ID = "1kkZdDOB2govDfJcxLmP6ZBlFxPKapfhx";
 
-    document.getElementById("q").addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        const query = e.target.value.trim();
-        if (!query) return;
-        const q = encodeURIComponent(query);
+  document.getElementById("q").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      const term = e.target.value.trim();
+      if (!term) return;
 
-        // Opens Drive's global search. Users can also click "Open The Files" to browse the folder.
-        window.open("https://drive.google.com/drive/search?q=" + q, "_blank", "noopener,noreferrer");
-      }
-    });
-  </script>
+      // Drive search restricted to that folder:
+      // Example query:  pizza parent:1kkZd...
+      const driveQuery = `${term} parent:${FOLDER_ID}`;
+      const url = "https://drive.google.com/drive/search?q=" + encodeURIComponent(driveQuery);
+
+      window.open(url, "_blank", "noopener,noreferrer");
+    }
+  });
+</script>
 </body>
 </html>
