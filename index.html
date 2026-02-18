@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>The Judge Files</title>
+  <style>
+    body { font-family: system-ui, Arial; margin: 0; background:#0b0f14; color:#e8eef6; }
+    .wrap { max-width: 900px; margin: 0 auto; padding: 40px 18px; }
+    h1 { font-size: 42px; margin: 0 0 10px; }
+    p { color: #b7c5d8; margin: 0 0 22px; line-height: 1.4; }
+    .card { background:#101826; border:1px solid #1c2633; border-radius: 16px; padding: 18px; }
+    .row { display:flex; gap:12px; flex-wrap:wrap; margin-top: 14px; }
+    a.btn {
+      display:inline-block; padding: 12px 16px; border-radius: 12px;
+      background:#16253a; border:1px solid #2a3950; color:#e8eef6; text-decoration:none;
+    }
+    a.btn:hover { background:#1b2f4a; }
+    .tiny { font-size: 13px; color:#9fb2cb; margin-top: 12px; }
+    .searchbox { width: 100%; padding: 12px 14px; border-radius: 12px;
+      border:1px solid #2a3950; background:#0b1220; color:#e8eef6; margin-top: 14px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>The Judge Files</h1>
+    <p>Upload “evidence” (PDFs/photos) and search it. Totally serious. Definitely real.</p>
+
+    <div class="card">
+      <strong>Portal</strong>
+      <div class="row">
+        <a class="btn" id="uploadLink" href="PASTE_YOUR_UPLOAD_FORM_OR_FOLDER_LINK" target="_blank">Upload Evidence</a>
+        <a class="btn" id="driveLink" href="PASTE_YOUR_DRIVE_FOLDER_LINK" target="_blank">Open The Files</a>
+      </div>
+
+      <input class="searchbox" id="q" placeholder="Search… (this will open Drive search)" />
+
+      <div class="tiny">
+        Tip: Use Google Drive’s search once the folder opens. It can search inside many PDFs automatically.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const driveFolder = "PASTE_YOUR_DRIVE_FOLDER_LINK";
+    document.getElementById("q").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        const q = encodeURIComponent(e.target.value.trim());
+        if (!q) return;
+        // Drive search URL (works best when signed into Google)
+        window.open("https://drive.google.com/drive/search?q=" + q, "_blank");
+      }
+    });
+  </script>
+</body>
+</html>
